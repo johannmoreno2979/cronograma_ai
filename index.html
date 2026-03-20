@@ -1,306 +1,615 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cronograma – Quality Analyst AI Agent</title>
-
-  <!-- DataTables (CDN) -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.2/css/buttons.dataTables.min.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planning de Desarrollo | Plataforma de Gestión de Aspirantes</title>
   <style>
     :root {
-      --bg: #ffffff;
-      --text: #111827;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --card: #f9fafb;
-      --shadow: 0 8px 30px rgba(0,0,0,.06);
-      --radius: 18px;
+      --primary: #b63735;
+      --primary-dark: #8f2928;
+      --primary-soft: #f8e7e7;
+      --text: #1f1f1f;
+      --muted: #666;
+      --bg: #f7f7f8;
+      --white: #ffffff;
+      --border: #e7d4d4;
+      --shadow: 0 12px 30px rgba(182, 55, 53, 0.10);
+      --radius: 20px;
     }
-    body {
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: var(--bg);
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #fff 0%, #f9f4f4 100%);
       color: var(--text);
+      line-height: 1.6;
     }
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(255,255,255,.9);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-    }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px 16px; }
-    .title {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 16px;
-      align-items: baseline;
-      justify-content: space-between;
-    }
-    h1 { font-size: 18px; margin: 0; letter-spacing: .2px; }
-    .sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .controls {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .search {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: #fff;
-      box-shadow: var(--shadow);
-    }
-    .search input {
-      border: none;
-      outline: none;
-      width: min(360px, 55vw);
-      font-size: 14px;
-    }
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-    .tabbtn {
-      border: 1px solid var(--border);
-      background: #fff;
-      padding: 10px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text);
-      transition: transform .05s ease, background .2s ease;
-    }
-    .tabbtn:hover { background: var(--card); }
-    .tabbtn.active { background: #111827; color: white; border-color: #111827; }
-    main { padding: 18px 16px 32px; }
-    .panel {
-      max-width: 1200px;
+
+    .container {
+      width: min(1180px, 92%);
       margin: 0 auto;
-      background: #fff;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 88px 0 72px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      top: -120px;
+      right: -80px;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 1.08;
+      margin-bottom: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 1.08rem;
+      max-width: 760px;
+      opacity: 0.96;
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-card h3 {
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .hero-card ul {
+      padding-left: 18px;
+    }
+
+    .hero-card li {
+      margin-bottom: 10px;
+    }
+
+    .section {
+      padding: 68px 0;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      max-width: 760px;
+      margin-bottom: 30px;
+    }
+
+    .project-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .project-box h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .project-box p,
+    .project-box li {
+      color: #333;
+    }
+
+    .project-box ul {
+      padding-left: 18px;
+    }
+
+    .planning-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .phase-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .phase-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 36px rgba(182, 55, 53, 0.16);
+    }
+
+    .phase-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .phase-number {
+      width: 44px;
+      height: 44px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .phase-duration {
+      background: var(--primary);
+      color: var(--white);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      white-space: nowrap;
+    }
+
+    .phase-card h3 {
+      color: var(--text);
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+
+    .phase-card p {
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .phase-card ul {
+      padding-left: 18px;
+      margin-bottom: 14px;
+    }
+
+    .phase-card li {
+      margin-bottom: 8px;
+    }
+
+    .deliverable {
+      background: #fcf4f4;
+      border-left: 4px solid var(--primary);
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+
+    .timeline {
+      background: var(--white);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 14px;
+      overflow: hidden;
     }
-    .tablewrap {
-      overflow: auto;
-      border-radius: calc(var(--radius) - 6px);
+
+    .timeline table {
+      width: 100%;
+      border-collapse: collapse;
     }
-    /* Improve DataTables look */
-    table.dataTable thead th {
-      white-space: nowrap;
-      font-size: 12px;
+
+    .timeline th,
+    .timeline td {
+      padding: 16px 18px;
+      text-align: left;
+      border-bottom: 1px solid #f1e4e4;
     }
-    table.dataTable tbody td {
-      font-size: 12px;
-      vertical-align: top;
+
+    .timeline th {
+      background: var(--primary);
+      color: var(--white);
     }
-    .dt-layout-row { align-items: center; }
-    .dt-search, .dt-length { display: none !important; } /* usamos búsqueda global */
-    .note {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
+
+    .timeline tr:last-child td {
+      border-bottom: none;
     }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+
+    .highlight {
+      background: linear-gradient(135deg, #fff 0%, #fdf4f4 100%);
       border: 1px solid var(--border);
-      border-radius: 999px;
-      background: var(--card);
-      font-size: 12px;
-      color: var(--muted);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
     }
-    footer {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 14px 16px 26px;
-      color: var(--muted);
-      font-size: 12px;
+
+    .highlight h3 {
+      color: var(--primary);
+      margin-bottom: 14px;
+      font-size: 1.4rem;
     }
-    @media (max-width: 560px) {
-      .search input { width: 52vw; }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .mini-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .mini-card h4 {
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .footer {
+      padding: 34px 0 60px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .project-box,
+      .planning-grid,
+      .highlight-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 72px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        padding: 54px 0;
+      }
+
+      .phase-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .timeline {
+        overflow-x: auto;
+      }
+
+      h1 {
+        font-size: 2.1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <div class="title">
-        <div>
-          <h1>Cronograma – Quality Analyst AI Agent</h1>
-          <div class="sub">Publicación HTML (lista para GitHub Pages). Incluye búsqueda, ordenamiento y exportación.</div>
-        </div>
-        <div class="controls">
-          <div class="badge" id="activeSheetBadge">Hoja: —</div>
-          <div class="search" title="Busca en la hoja activa">
-            🔎 <input id="globalSearch" type="search" placeholder="Buscar (en la hoja activa)..." />
-          </div>
-        </div>
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="badge">Planning estratégico · Innovación + rapidez</span>
+        <h1>Planning de desarrollo para una plataforma de gestión de aspirantes por stands</h1>
+        <p>
+          Proyecto orientado a una empresa moderna que busca optimizar el registro de aspirantes mediante carga de Excel,
+          trazabilidad por etapas y control operativo de stands como reclutamiento, selección, exámenes médicos,
+          revisión de seguridad y contratación.
+        </p>
       </div>
 
-      <div class="tabs" id="tabs"></div>
+      <div class="hero-card">
+        <h3>Visión del proyecto</h3>
+        <ul>
+          <li>Registrar aspirantes masivamente desde archivos Excel.</li>
+          <li>Controlar el flujo del candidato por cada stand del proceso.</li>
+          <li>Visualizar avance, estados pendientes y tiempos de atención.</li>
+          <li>Crear una base sólida para evolucionar a dashboards, alertas y analítica.</li>
+        </ul>
+      </div>
     </div>
   </header>
 
   <main>
-    <div class="panel">
-      <div class="tablewrap">
-        <section class="sheet" data-sheet="Gantt General" id="tab_0" style="display:none;"><table id="tbl_0" class="display compact stripe" style="width:100%"><thead><tr><th>Unnamed: 0</th><th>Unnamed: 1</th><th>Unnamed: 2</th><th>Unnamed: 3</th><th>Unnamed: 4</th><th>Unnamed: 6</th><th>Unnamed: 7</th><th>Unnamed: 8</th><th>Unnamed: 9</th><th>Unnamed: 10</th><th>Unnamed: 11</th><th>Unnamed: 12</th><th>Unnamed: 13</th><th>Unnamed: 14</th><th>Unnamed: 15</th><th>Unnamed: 16</th><th>Unnamed: 17</th><th>Unnamed: 18</th><th>Unnamed: 19</th><th>Unnamed: 20</th><th>Unnamed: 21</th><th>Unnamed: 22</th><th>Unnamed: 23</th><th>Unnamed: 24</th><th>Unnamed: 25</th><th>Unnamed: 26</th><th>Unnamed: 27</th><th>Unnamed: 28</th><th>Unnamed: 29</th><th>Unnamed: 30</th><th>Unnamed: 31</th><th>Unnamed: 32</th><th>Unnamed: 33</th><th>Unnamed: 34</th><th>Unnamed: 35</th><th>Unnamed: 36</th><th>Unnamed: 37</th><th>Unnamed: 38</th><th>Unnamed: 39</th><th>Unnamed: 40</th></tr></thead><tbody>
-<tr><td>Implementación Analista IA
-Calidad Formación Selección Contratación</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td>INICIO DEL PROYECTO</td><td></td><td>0</td><td>2026-01-26</td><td>2026-01-26</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2026-02-02</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2026-02-09</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2026-02-16</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2026-02-23</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td>2026-01-26</td><td></td><td>2026-01-26</td><td>2026-01-27</td><td>2026-01-28</td><td>2026-01-29</td><td>2026-01-30</td><td>2026-01-31</td><td>2026-02-01</td><td>2026-02-02</td><td>2026-02-03</td><td>2026-02-04</td><td>2026-02-05</td><td>2026-02-06</td><td>2026-02-07</td><td>2026-02-08</td><td>2026-02-09</td><td>2026-02-10</td><td>2026-02-11</td><td>2026-02-12</td><td>2026-02-13</td><td>2026-02-14</td><td>2026-02-15</td><td>2026-02-16</td><td>2026-02-17</td><td>2026-02-18</td><td>2026-02-19</td><td>2026-02-20</td><td>2026-02-21</td><td>2026-02-22</td><td>2026-02-23</td><td>2026-02-24</td><td>2026-02-25</td><td>2026-02-26</td><td>2026-02-27</td><td>2026-02-28</td><td>2026-03-01</td></tr>
-<tr><td>TAREA</td><td>RESPONSABLE</td><td>PROGRESO</td><td>INICIO</td><td>FIN</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td></tr>
-<tr><td>1. Frontend login / segmentos / matrices.</td><td>Johann Moreno</td><td>0.86</td><td>2026-01-26</td><td>2026-02-09</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>2. Pruebas de estrés (Cargar matrices con todos los jefes y  lideres en simultaneo).</td><td>Johann Moreno</td><td>0</td><td>2026-02-10</td><td>2026-02-10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>3. Desarrollo de modulo Pront Engienner (Incluyendo pruebas).</td><td>Johann Moreno</td><td>0</td><td>2026-02-10</td><td>2026-02-12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>4. Proceso OSI (Pruebas).</td><td>Johann Moreno</td><td>0</td><td>2026-02-09</td><td>2026-02-17</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>5. Desarrollo modulo de retroalimentación Frontend</td><td>Johann Moreno</td><td>0</td><td>2026-02-13</td><td>2026-02-16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>6. Inicio desarrollo RAG</td><td>Nikolas Pereira</td><td>0</td><td>2026-02-16</td><td>2026-02-23</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>7. Dockerización </td><td>Johann Moreno</td><td>0</td><td>2026-02-06</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>8. Pruebas con Roger (Montechelo).</td><td>Nikolas Pereira</td><td>0</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>9. Solicitud del puente entre Teleco y Montechelo.</td><td>Johann Moreno</td><td>0</td><td>2026-02-06</td><td>2026-02-10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>10. Incluir los Promt (matriz) de calidad en el Frontend.</td><td>Nikolas Pereira</td><td>0</td><td>2026-02-12</td><td>2026-02-18</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>11. Desarrollo SAC &amp; RET I.A (Desarrollo del esqueleto).</td><td>Nikolas Pereira</td><td>0</td><td>2026-02-06</td><td>2026-02-18</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>12. Desarrollo Selección I.A (Desarrollo del esqueleto).</td><td>Nikolas Pereira</td><td>0</td><td>2026-02-04</td><td>2026-02-12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>13. Grabadora IA</td><td>Nikolas Pereira</td><td>1</td><td>2026-01-27</td><td>2026-02-05</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>14. Calibración SAC &amp; RET I.A </td><td>Nikolas Pereira</td><td>0</td><td>2026-02-19</td><td>2026-03-12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>15. Calibración Selección</td><td>Nikolas Pereira</td><td>0</td><td>2026-02-13</td><td>2026-02-21</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-</tbody></table></section><section class="sheet" data-sheet="Gantt_Campañas" id="tab_1" style="display:none;"><table id="tbl_1" class="display compact stripe" style="width:100%"><thead><tr><th>Unnamed: 0</th><th>Unnamed: 1</th><th>Unnamed: 2</th><th>Unnamed: 3</th><th>Unnamed: 4</th><th>Unnamed: 6</th><th>Unnamed: 7</th><th>Unnamed: 8</th><th>Unnamed: 9</th><th>Unnamed: 10</th><th>Unnamed: 11</th><th>Unnamed: 12</th><th>Unnamed: 13</th><th>Unnamed: 14</th><th>Unnamed: 15</th><th>Unnamed: 16</th><th>Unnamed: 17</th><th>Unnamed: 18</th><th>Unnamed: 19</th><th>Unnamed: 20</th><th>Unnamed: 21</th><th>Unnamed: 22</th><th>Unnamed: 23</th><th>Unnamed: 24</th><th>Unnamed: 25</th><th>Unnamed: 26</th><th>Unnamed: 27</th><th>Unnamed: 28</th><th>Unnamed: 29</th><th>Unnamed: 30</th><th>Unnamed: 31</th><th>Unnamed: 32</th><th>Unnamed: 33</th><th>Unnamed: 34</th><th>Unnamed: 35</th><th>Unnamed: 36</th><th>Unnamed: 37</th><th>Unnamed: 38</th><th>Unnamed: 39</th><th>Unnamed: 40</th></tr></thead><tbody>
-<tr><td>Implementación Analista IA
-Calidad Formación Selección Contratación</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td>INICIO DEL PROYECTO</td><td></td><td>0</td><td>2025-12-05</td><td>Esqueleto</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Calibración sin Q.A</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Calibración con Q.A</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1ra Auditorias</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Desarrollo informe</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td></td><td>2025-12-05</td><td></td><td>2025-12-05</td><td>2025-12-06</td><td>2025-12-07</td><td>2025-12-08</td><td>2025-12-09</td><td>2025-12-10</td><td>2025-12-11</td><td>2025-12-12</td><td>2025-12-13</td><td>2025-12-14</td><td>2025-12-15</td><td>2025-12-16</td><td>2025-12-17</td><td>2025-12-18</td><td>2025-12-19</td><td>2025-12-20</td><td>2025-12-21</td><td>2025-12-22</td><td>2025-12-23</td><td>2025-12-24</td><td>2025-12-25</td><td>2025-12-26</td><td>2025-12-27</td><td>2025-12-28</td><td>2025-12-29</td><td>2025-12-30</td><td>2025-12-31</td><td>2026-01-01</td><td>2026-01-02</td><td>2026-01-03</td><td>2026-01-04</td><td>2026-01-05</td><td>2026-01-06</td><td>2026-01-07</td><td>2026-01-08</td></tr>
-<tr><td>TAREA</td><td>RESPONSABLE</td><td>PROGRESO</td><td>INICIO</td><td>FIN</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td><td>V</td><td>S</td><td>D</td><td>L</td><td>M</td><td>M</td><td>J</td></tr>
-<tr><td>Claro Ventas Bogotá</td><td>Emmanuel Lopez</td><td>0.2</td><td>2025-12-05</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>AIR-E</td><td>Bairon Castro</td><td>0.2</td><td>2025-12-05</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Chubb Seguros | Movistar</td><td>Juan Benitez</td><td>0.1</td><td>2025-12-05</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Chubb Seguros | Coomeva</td><td>Juan Benitez</td><td>0.1</td><td>2025-12-05</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Chubb Seguros | Banco W</td><td>Juan Benitez</td><td>0.1</td><td>2025-12-05</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Chubb Seguros | Colsubsidio</td><td>José Zapata</td><td>0</td><td>2025-12-05</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Chubb Seguros | ESB</td><td>Alejandro Pineda</td><td>0</td><td>2025-12-05</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>ETB - Tramites fijos</td><td>Estevan Torres </td><td>0.2</td><td>2025-12-05</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Recuperación</td><td>Esteban Martinez</td><td>0.2</td><td>2025-12-05</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Upselling</td><td>Brandon Martinez</td><td>0.16</td><td>2025-12-09</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Tercer anillo</td><td>Brandon Martinez</td><td>1</td><td>2025-12-09</td><td>2026-01-05</td><td>&lt;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Fidelización</td><td>Sebastian Sanchez</td><td>1</td><td>2025-12-09</td><td>2026-01-05</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>SAC Swat</td><td>Bairon Castro</td><td>0</td><td>2026-02-06</td><td>2026-02-18</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Rete Convergente</td><td>Alejandro Pineda</td><td>0</td><td>2026-02-06</td><td>2026-02-18</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Selección</td><td>Santiago Díaz &amp; Santiago</td><td>0</td><td>2026-02-04</td><td>2026-02-12</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Reversión</td><td>Sebastian Sanchez</td><td>0</td><td>2026-01-07</td><td>2026-02-19</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-</tbody></table></section><section class="sheet" data-sheet="Soportes brindados" id="tab_2" style="display:none;"><table id="tbl_2" class="display compact stripe" style="width:100%"><thead><tr><th>Unnamed: 0</th><th>Unnamed: 1</th><th>Unnamed: 2</th><th>Unnamed: 3</th><th>Unnamed: 4</th><th>Unnamed: 5</th></tr></thead><tbody>
-<tr><td>Implementación Soporte Desarrollo BI 
-Calidad Formación Selección Contratación</td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td>SOPORTE</td><td></td><td>0</td><td>2025-12-27</td><td></td></tr>
-<tr><td></td><td></td><td></td><td>2025-12-27</td><td></td><td></td></tr>
-<tr><td>TAREA</td><td>RESPONSABLE</td><td>PROGRESO</td><td>INICIO</td><td>FIN</td><td>tiempo en horas</td></tr>
-<tr><td>Soporte Claro Chile - Error en entrega de tipo Error critico - se capacita sobre el informe</td><td>Diana Casallas</td><td>1</td><td>2025-12-27</td><td>2025-12-27</td><td>5</td></tr>
-<tr><td>Soporte Natura - WOM FC - Colsubsidio Cobranza -se capacita sobre el informe</td><td>Laura Fernanda Ramirez</td><td>1</td><td>2025-12-28</td><td>2025-12-28</td><td>5</td></tr>
-<tr><td>Soporte Claro Ventas T&amp;T  - Se incluye en lista de actualización web scraping - se capacita sobre el informe</td><td>Jeimmy Vanessa Calderón</td><td>1</td><td>2025-12-29</td><td>2025-12-29</td><td>1</td></tr>
-<tr><td>Soporte Claro Ventas Bogota  - Se incluye dos nuevos items que no se incluyeron en las matrices iniciales.</td><td>Daniela Guzman</td><td>0.8</td><td>2025-12-30</td><td>2025-12-30</td><td>6.5</td></tr>
-</tbody></table></section>
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Proyecto base sugerido</h2>
+        <p class="section-subtitle">
+          Además del planning, se propone dejar definido el concepto inicial del software para poder continuar su construcción posteriormente.
+        </p>
+
+        <div class="project-box">
+          <div>
+            <h3>Nombre tentativo</h3>
+            <p><strong>Talent Flow Hub</strong></p>
+            <br>
+            <h3>Objetivo</h3>
+            <p>
+              Centralizar el ingreso y seguimiento de aspirantes en jornadas masivas de selección, permitiendo que cada candidato avance por los distintos stands de forma controlada, rápida y medible.
+            </p>
+          </div>
+
+          <div>
+            <h3>Funcionalidades iniciales</h3>
+            <ul>
+              <li>Carga de aspirantes desde Excel.</li>
+              <li>Creación y administración de stands.</li>
+              <li>Cambio de estado del aspirante por etapa.</li>
+              <li>Consulta rápida del avance individual.</li>
+              <li>Panel de seguimiento operativo.</li>
+              <li>Base lista para escalar a reportería y automatización.</li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="note">Tip: puedes hacer clic en los encabezados para ordenar. Usa los botones de exportación para descargar CSV/Excel/Imprimir.</div>
-    </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Planning de desarrollo</h2>
+        <p class="section-subtitle">
+          Estructura ajustada a un desarrollo ágil y realista, alineada con los tiempos estimados para construir un MVP funcional del sistema.
+        </p>
+
+        <div class="planning-grid">
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">1</div>
+              <span class="phase-duration">0.5 día</span>
+            </div>
+            <h3>Ajuste del MER y definición de tablas</h3>
+            <p>Se aterriza el modelo entidad-relación del proyecto y se definen las tablas necesarias para soportar el flujo operativo.</p>
+            <ul>
+              <li>Revisión del proceso de candidatos y stands.</li>
+              <li>Definición de tablas principales y relaciones.</li>
+              <li>Normalización de campos clave.</li>
+              <li>Validación de estructura base para escalabilidad.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> MER ajustado y estructura de base de datos definida.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">2</div>
+              <span class="phase-duration">0.5 día</span>
+            </div>
+            <h3>Setup base del proyecto</h3>
+            <p>Se prepara la arquitectura inicial para dejar operativa la base técnica del sistema.</p>
+            <ul>
+              <li>Configuración de FastAPI para backend.</li>
+              <li>Configuración inicial de React para frontend.</li>
+              <li>Conexión base a la base de datos.</li>
+              <li>Estructura inicial del repositorio y carpetas.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> proyecto base funcional con frontend, backend y BD conectados.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">3</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>Login con roles y control de acceso</h3>
+            <p>Se construye el acceso al sistema asegurando que cada perfil visualice y gestione solo lo que le corresponde.</p>
+            <ul>
+              <li>Autenticación de usuarios.</li>
+              <li>Definición de roles y permisos.</li>
+              <li>Protección de rutas y módulos.</li>
+              <li>Control de acceso por perfil operativo.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> módulo de login y autorización por roles funcionando.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">4</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>MFA con OTP</h3>
+            <p>Se refuerza la seguridad del acceso agregando un segundo factor de autenticación mediante código OTP.</p>
+            <ul>
+              <li>Generación y validación de OTP.</li>
+              <li>Integración del flujo MFA al login.</li>
+              <li>Manejo de expiración y reenvío.</li>
+              <li>Validación de experiencia de usuario segura y rápida.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> autenticación multifactor implementada.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">5</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>Carga de candidatos desde Excel</h3>
+            <p>Se desarrolla el módulo principal para importar aspirantes de forma masiva con reglas de validación.</p>
+            <ul>
+              <li>Lectura del archivo Excel.</li>
+              <li>Validación de estructura y columnas esperadas.</li>
+              <li>Control de formatos y campos obligatorios.</li>
+              <li>Retroalimentación de errores de carga.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> carga masiva de candidatos funcional con validaciones iniciales.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">6</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>Mapeo, persistencia y manejo de errores</h3>
+            <p>Se transforma la información del archivo al modelo del sistema y se asegura una persistencia confiable.</p>
+            <ul>
+              <li>Mapeo de columnas Excel a campos de base de datos.</li>
+              <li>Inserción y actualización controlada de registros.</li>
+              <li>Manejo de errores técnicos y funcionales.</li>
+              <li>Registro de inconsistencias para trazabilidad.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> proceso robusto de guardado de información con control de errores.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">7</div>
+              <span class="phase-duration">2 días</span>
+            </div>
+            <h3>Control de duplicados, pruebas y ajustes</h3>
+            <p>Se asegura la estabilidad del MVP validando la calidad de la información y ajustando el comportamiento del sistema.</p>
+            <ul>
+              <li>Reglas para detección de candidatos duplicados.</li>
+              <li>Pruebas funcionales del flujo de carga.</li>
+              <li>Ajustes de validaciones y mensajes.</li>
+              <li>Corrección de incidencias encontradas en pruebas.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> MVP estabilizado, validado y listo para siguiente fase funcional.</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Timeline estimado</h2>
+        <p class="section-subtitle">
+          Planeación ajustada a los tiempos definidos para una primera entrega rápida, funcional y escalable del producto.
+        </p>
+
+        <div class="timeline">
+          <table>
+            <thead>
+              <tr>
+                <th>Fase</th>
+                <th>Duración</th>
+                <th>Resultado esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ajuste del MER y tablas</td>
+                <td>0.5 día</td>
+                <td>Estructura lógica de datos definida</td>
+              </tr>
+              <tr>
+                <td>Setup base FastAPI + React + BD</td>
+                <td>0.5 día</td>
+                <td>Proyecto inicial operando</td>
+              </tr>
+              <tr>
+                <td>Login con roles</td>
+                <td>1 día</td>
+                <td>Acceso controlado al sistema</td>
+              </tr>
+              <tr>
+                <td>MFA con OTP</td>
+                <td>1 día</td>
+                <td>Seguridad reforzada en autenticación</td>
+              </tr>
+              <tr>
+                <td>Carga de candidatos desde Excel</td>
+                <td>1 día</td>
+                <td>Ingreso masivo con validaciones</td>
+              </tr>
+              <tr>
+                <td>Mapeo, persistencia y errores</td>
+                <td>1 día</td>
+                <td>Guardado confiable de información</td>
+              </tr>
+              <tr>
+                <td>Duplicados, pruebas y ajustes</td>
+                <td>2 días</td>
+                <td>MVP validado y estable</td>
+              </tr>
+              <tr>
+                <td><strong>Total estimado</strong></td>
+                <td><strong>7 días</strong></td>
+                <td><strong>Primera versión funcional lista</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="highlight">
+          <h3>Valor estratégico del proyecto</h3>
+          <p>
+            Esta solución no solo ordena el proceso de selección; también proyecta una empresa ágil, tecnológica e innovadora, capaz de atender jornadas masivas con control, velocidad y trazabilidad. El sistema puede comenzar como un MVP simple y evolucionar hacia una plataforma robusta con reportería, automatización y analítica operativa.
+          </p>
+
+          <div class="highlight-grid">
+            <div class="mini-card">
+              <h4>Innovación</h4>
+              <p>Transforma un proceso manual en una experiencia digital moderna y centralizada.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Rapidez</h4>
+              <p>Reduce tiempos de registro, validación y seguimiento de los aspirantes.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Escalabilidad</h4>
+              <p>Queda listo para crecer hacia dashboards, integraciones y automatización.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    Hecho a partir del archivo Excel: <b>10.Cronograma_de_implementaciones_quality_analyst_AI_agent.xlsx</b>.
+  <footer class="footer">
+    <div class="container">
+      Planning de desarrollo · Plataforma de Gestión de Aspirantes por Stands · Diseño listo para GitHub Pages
+    </div>
   </footer>
-
-  <!-- JS (CDN) -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.print.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-  <script>
-    const SHEETS = [{"name": "Gantt General", "id": "tab_0", "table_id": "tbl_0"}, {"name": "Gantt_Campañas", "id": "tab_1", "table_id": "tbl_1"}, {"name": "Soportes brindados", "id": "tab_2", "table_id": "tbl_2"}];
-
-    let tables = {};
-    let active = null;
-
-    function setActive(idx) {
-      const sheet = SHEETS[idx];
-      active = sheet;
-
-      // show/hide
-      document.querySelectorAll(".sheet").forEach(s => s.style.display = "none");
-      document.getElementById(sheet.id).style.display = "block";
-
-      // active tab style
-      document.querySelectorAll(".tabbtn").forEach(b => b.classList.remove("active"));
-      document.querySelector(`[data-idx='${idx}']`).classList.add("active");
-
-      // badge
-      document.getElementById("activeSheetBadge").textContent = `Hoja: ${sheet.name}`;
-
-      // reset search box & apply to current table
-      const q = document.getElementById("globalSearch").value || "";
-      if (tables[sheet.table_id]) {
-        tables[sheet.table_id].search(q).draw();
-      }
-    }
-
-    function init() {
-      // tabs
-      const tabsEl = document.getElementById("tabs");
-      SHEETS.forEach((s, i) => {
-        const btn = document.createElement("button");
-        btn.className = "tabbtn";
-        btn.textContent = s.name;
-        btn.dataset.idx = i;
-        btn.addEventListener("click", () => setActive(i));
-        tabsEl.appendChild(btn);
-      });
-
-      // datatables init per sheet
-      SHEETS.forEach((s) => {
-        tables[s.table_id] = new DataTable(`#${s.table_id}`, {
-          scrollX: true,
-          fixedHeader: true,
-          pageLength: 25,
-          dom: "Bfrtip",
-          buttons: [
-            { extend: "copy", title: s.name },
-            { extend: "csv", title: s.name },
-            { extend: "excel", title: s.name },
-            { extend: "print", title: s.name }
-          ]
-        });
-      });
-
-      // global search applies only to active sheet
-      const input = document.getElementById("globalSearch");
-      input.addEventListener("input", (e) => {
-        const q = e.target.value || "";
-        if (!active) return;
-        const t = tables[active.table_id];
-        if (t) t.search(q).draw();
-      });
-
-      setActive(0);
-    }
-
-    window.addEventListener("DOMContentLoaded", init);
-  </script>
 </body>
 </html>
