@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planning de Desarrollo | Plataforma de Gestión de Aspirantes</title>
+  <style>
+    :root {
+      --primary: #b63735;
+      --primary-dark: #8f2928;
+      --primary-soft: #f8e7e7;
+      --text: #1f1f1f;
+      --muted: #666;
+      --bg: #f7f7f8;
+      --white: #ffffff;
+      --border: #e7d4d4;
+      --shadow: 0 12px 30px rgba(182, 55, 53, 0.10);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #fff 0%, #f9f4f4 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 88px 0 72px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      top: -120px;
+      right: -80px;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 1.08;
+      margin-bottom: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 1.08rem;
+      max-width: 760px;
+      opacity: 0.96;
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-card h3 {
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .hero-card ul {
+      padding-left: 18px;
+    }
+
+    .hero-card li {
+      margin-bottom: 10px;
+    }
+
+    .section {
+      padding: 68px 0;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      max-width: 760px;
+      margin-bottom: 30px;
+    }
+
+    .project-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .project-box h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .project-box p,
+    .project-box li {
+      color: #333;
+    }
+
+    .project-box ul {
+      padding-left: 18px;
+    }
+
+    .planning-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .phase-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .phase-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 36px rgba(182, 55, 53, 0.16);
+    }
+
+    .phase-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .phase-number {
+      width: 44px;
+      height: 44px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .phase-duration {
+      background: var(--primary);
+      color: var(--white);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      white-space: nowrap;
+    }
+
+    .phase-card h3 {
+      color: var(--text);
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+
+    .phase-card p {
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .phase-card ul {
+      padding-left: 18px;
+      margin-bottom: 14px;
+    }
+
+    .phase-card li {
+      margin-bottom: 8px;
+    }
+
+    .deliverable {
+      background: #fcf4f4;
+      border-left: 4px solid var(--primary);
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+
+    .timeline {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .timeline table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .timeline th,
+    .timeline td {
+      padding: 16px 18px;
+      text-align: left;
+      border-bottom: 1px solid #f1e4e4;
+    }
+
+    .timeline th {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .timeline tr:last-child td {
+      border-bottom: none;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, #fff 0%, #fdf4f4 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
+    }
+
+    .highlight h3 {
+      color: var(--primary);
+      margin-bottom: 14px;
+      font-size: 1.4rem;
+    }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .mini-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .mini-card h4 {
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .footer {
+      padding: 34px 0 60px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .project-box,
+      .planning-grid,
+      .highlight-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 72px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        padding: 54px 0;
+      }
+
+      .phase-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .timeline {
+        overflow-x: auto;
+      }
+
+      h1 {
+        font-size: 2.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="badge">Planning estratégico · Innovación + rapidez</span>
+        <h1>Planning de desarrollo para una plataforma de gestión de aspirantes por stands</h1>
+        <p>
+          Proyecto orientado a una empresa moderna que busca optimizar el registro de aspirantes mediante carga de Excel,
+          trazabilidad por etapas y control operativo de stands como reclutamiento, selección, exámenes médicos,
+          revisión de seguridad y contratación.
+        </p>
+      </div>
+
+      <div class="hero-card">
+        <h3>Visión del proyecto</h3>
+        <ul>
+          <li>Registrar aspirantes masivamente desde archivos Excel.</li>
+          <li>Controlar el flujo del candidato por cada stand del proceso.</li>
+          <li>Visualizar avance, estados pendientes y tiempos de atención.</li>
+          <li>Crear una base sólida para evolucionar a dashboards, alertas y analítica.</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Proyecto base sugerido</h2>
+        <p class="section-subtitle">
+          Además del planning, se propone dejar definido el concepto inicial del software para poder continuar su construcción posteriormente.
+        </p>
+
+        <div class="project-box">
+          <div>
+            <h3>Nombre tentativo</h3>
+            <p><strong>Talent Flow Hub</strong></p>
+            <br>
+            <h3>Objetivo</h3>
+            <p>
+              Centralizar el ingreso y seguimiento de aspirantes en jornadas masivas de selección, permitiendo que cada candidato avance por los distintos stands de forma controlada, rápida y medible.
+            </p>
+          </div>
+
+          <div>
+            <h3>Funcionalidades iniciales</h3>
+            <ul>
+              <li>Carga de aspirantes desde Excel.</li>
+              <li>Creación y administración de stands.</li>
+              <li>Cambio de estado del aspirante por etapa.</li>
+              <li>Consulta rápida del avance individual.</li>
+              <li>Panel de seguimiento operativo.</li>
+              <li>Base lista para escalar a reportería y automatización.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Planning de desarrollo</h2>
+        <p class="section-subtitle">
+          Estructura ajustada a un desarrollo ágil y realista, alineada con los tiempos estimados para construir un MVP funcional del sistema.
+        </p>
+
+        <div class="planning-grid">
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">1</div>
+              <span class="phase-duration">0.5 día</span>
+            </div>
+            <h3>Ajuste del MER y definición de tablas</h3>
+            <p>Se aterriza el modelo entidad-relación del proyecto y se definen las tablas necesarias para soportar el flujo operativo.</p>
+            <ul>
+              <li>Revisión del proceso de candidatos y stands.</li>
+              <li>Definición de tablas principales y relaciones.</li>
+              <li>Normalización de campos clave.</li>
+              <li>Validación de estructura base para escalabilidad.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> MER ajustado y estructura de base de datos definida.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">2</div>
+              <span class="phase-duration">0.5 día</span>
+            </div>
+            <h3>Setup base del proyecto</h3>
+            <p>Se prepara la arquitectura inicial para dejar operativa la base técnica del sistema.</p>
+            <ul>
+              <li>Configuración de FastAPI para backend.</li>
+              <li>Configuración inicial de React para frontend.</li>
+              <li>Conexión base a la base de datos.</li>
+              <li>Estructura inicial del repositorio y carpetas.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> proyecto base funcional con frontend, backend y BD conectados.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">3</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>Login con roles y control de acceso</h3>
+            <p>Se construye el acceso al sistema asegurando que cada perfil visualice y gestione solo lo que le corresponde.</p>
+            <ul>
+              <li>Autenticación de usuarios.</li>
+              <li>Definición de roles y permisos.</li>
+              <li>Protección de rutas y módulos.</li>
+              <li>Control de acceso por perfil operativo.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> módulo de login y autorización por roles funcionando.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">4</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>MFA con OTP</h3>
+            <p>Se refuerza la seguridad del acceso agregando un segundo factor de autenticación mediante código OTP.</p>
+            <ul>
+              <li>Generación y validación de OTP.</li>
+              <li>Integración del flujo MFA al login.</li>
+              <li>Manejo de expiración y reenvío.</li>
+              <li>Validación de experiencia de usuario segura y rápida.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> autenticación multifactor implementada.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">5</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>Carga de candidatos desde Excel</h3>
+            <p>Se desarrolla el módulo principal para importar aspirantes de forma masiva con reglas de validación.</p>
+            <ul>
+              <li>Lectura del archivo Excel.</li>
+              <li>Validación de estructura y columnas esperadas.</li>
+              <li>Control de formatos y campos obligatorios.</li>
+              <li>Retroalimentación de errores de carga.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> carga masiva de candidatos funcional con validaciones iniciales.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">6</div>
+              <span class="phase-duration">1 día</span>
+            </div>
+            <h3>Mapeo, persistencia y manejo de errores</h3>
+            <p>Se transforma la información del archivo al modelo del sistema y se asegura una persistencia confiable.</p>
+            <ul>
+              <li>Mapeo de columnas Excel a campos de base de datos.</li>
+              <li>Inserción y actualización controlada de registros.</li>
+              <li>Manejo de errores técnicos y funcionales.</li>
+              <li>Registro de inconsistencias para trazabilidad.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> proceso robusto de guardado de información con control de errores.</div>
+          </article>
+
+          <article class="phase-card">
+            <div class="phase-head">
+              <div class="phase-number">7</div>
+              <span class="phase-duration">2 días</span>
+            </div>
+            <h3>Control de duplicados, pruebas y ajustes</h3>
+            <p>Se asegura la estabilidad del MVP validando la calidad de la información y ajustando el comportamiento del sistema.</p>
+            <ul>
+              <li>Reglas para detección de candidatos duplicados.</li>
+              <li>Pruebas funcionales del flujo de carga.</li>
+              <li>Ajustes de validaciones y mensajes.</li>
+              <li>Corrección de incidencias encontradas en pruebas.</li>
+            </ul>
+            <div class="deliverable"><strong>Entregable:</strong> MVP estabilizado, validado y listo para siguiente fase funcional.</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Timeline estimado</h2>
+        <p class="section-subtitle">
+          Planeación ajustada a los tiempos definidos para una primera entrega rápida, funcional y escalable del producto.
+        </p>
+
+        <div class="timeline">
+          <table>
+            <thead>
+              <tr>
+                <th>Fase</th>
+                <th>Duración</th>
+                <th>Resultado esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ajuste del MER y tablas</td>
+                <td>0.5 día</td>
+                <td>Estructura lógica de datos definida</td>
+              </tr>
+              <tr>
+                <td>Setup base FastAPI + React + BD</td>
+                <td>0.5 día</td>
+                <td>Proyecto inicial operando</td>
+              </tr>
+              <tr>
+                <td>Login con roles</td>
+                <td>1 día</td>
+                <td>Acceso controlado al sistema</td>
+              </tr>
+              <tr>
+                <td>MFA con OTP</td>
+                <td>1 día</td>
+                <td>Seguridad reforzada en autenticación</td>
+              </tr>
+              <tr>
+                <td>Carga de candidatos desde Excel</td>
+                <td>1 día</td>
+                <td>Ingreso masivo con validaciones</td>
+              </tr>
+              <tr>
+                <td>Mapeo, persistencia y errores</td>
+                <td>1 día</td>
+                <td>Guardado confiable de información</td>
+              </tr>
+              <tr>
+                <td>Duplicados, pruebas y ajustes</td>
+                <td>2 días</td>
+                <td>MVP validado y estable</td>
+              </tr>
+              <tr>
+                <td><strong>Total estimado</strong></td>
+                <td><strong>7 días</strong></td>
+                <td><strong>Primera versión funcional lista</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="highlight">
+          <h3>Valor estratégico del proyecto</h3>
+          <p>
+            Esta solución no solo ordena el proceso de selección; también proyecta una empresa ágil, tecnológica e innovadora, capaz de atender jornadas masivas con control, velocidad y trazabilidad. El sistema puede comenzar como un MVP simple y evolucionar hacia una plataforma robusta con reportería, automatización y analítica operativa.
+          </p>
+
+          <div class="highlight-grid">
+            <div class="mini-card">
+              <h4>Innovación</h4>
+              <p>Transforma un proceso manual en una experiencia digital moderna y centralizada.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Rapidez</h4>
+              <p>Reduce tiempos de registro, validación y seguimiento de los aspirantes.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Escalabilidad</h4>
+              <p>Queda listo para crecer hacia dashboards, integraciones y automatización.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      Planning de desarrollo · Plataforma de Gestión de Aspirantes por Stands · Diseño listo para GitHub Pages
+    </div>
+  </footer>
+</body>
+</html>
